@@ -1,0 +1,144 @@
+---
+title: "Intro to Geospatial Visualization with leaflet in R"
+author: "Ashirwad Barnwal"
+date: "11/26/2020"
+output: 
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: ["kunoichi", "ninjutsu"]
+    nature:
+      ratio: '16:9'
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include = FALSE}
+library(leaflet)
+library(rnaturalearth)
+library(knitr)
+library(emo)
+
+asian_countries <- ne_countries(
+  continent = "asia", 
+  returnclass = "sf"
+)
+```
+
+---
+
+layout: false
+class: bg-main3 split-30
+
+.column[
+
+]
+
+.column.slide-in-right[.content.vmiddle[
+
+.sliderbox.shade_main.pad1[
+.font5[Legends]
+]
+
+]]
+
+---
+
+class: split-two white
+
+.column.bg-main1[.content[
+
+# Legend for .yellow[colorNumeric]-based palette
+
+```{r legend-num-pal, eval = FALSE}
+leaflet(asian_countries) %>%
+  addPolygons(
+    stroke = FALSE,
+    color = ~num_pal(gdp_md_est),
+    fillOpacity = 1,
+    smoothFactor = 0.2
+  ) %>%
+  addLegend(
+    position = "bottomright",
+    pal = num_pal,
+    values =  ~gdp_md_est,
+    opacity = 1,
+    labFormat = labelFormat(prefix = "$"),
+    title = "Est. GDP (2010)"
+  )
+```
+
+]]
+
+.column.bg-main3[.content.vmiddle[
+
+```{r legend-num-pal-out, ref.label = "legend-num-pal", echo = FALSE, warning = FALSE, out.width = "100%"}
+
+```
+
+]]
+
+---
+
+class: split-two white
+
+.column.bg-main1[.content[
+
+# Legend for .yellow[colorQuantile]-based palette
+
+```{r legend-q-pal, eval = FALSE}
+leaflet(asian_countries) %>%
+  addPolygons(
+    stroke = FALSE,
+    color = ~q_pal(gdp_md_est),
+    fillOpacity = 1,
+    smoothFactor = 0.2
+  ) %>%
+  addLegend(
+    pal = q_pal,
+    values = ~gdp_md_est,
+    opacity = 1
+  )
+```
+
+]]
+
+.column.bg-main3[.content.vmiddle[
+
+```{r legend-q-pal-out, ref.label = "legend-q-pal", echo = FALSE, warning = FALSE, out.width = "100%"}
+
+```
+
+]]
+
+---
+
+class: split-40 white
+
+.column.bg-main1[.content.vmiddle.center[
+
+## Want to learn more about the .yellow[addLegend] function?  
+
+## Check `r ji("point_right")`
+
+]]
+
+.column[.content.vmiddle[
+
+```{r add-legend-doc, echo = FALSE}
+include_url(
+  "https://www.rdocumentation.org/packages/leaflet/versions/2.0.3/topics/addLegend",
+  height = "600px"
+)
+```
+
+]]
+
+
+
+
+
+
+
+
+
