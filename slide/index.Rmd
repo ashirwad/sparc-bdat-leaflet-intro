@@ -37,6 +37,222 @@ class: bg-main3 split-30
 .column.slide-in-right[.content.vmiddle[
 
 .sliderbox.shade_main.pad1[
+.font5[Colors]
+]
+
+]]
+
+---
+
+class: split-two white
+
+.column.bg-main1[.content[
+
+# Map variables to colors using .yellow[two key steps]
+
+<br>
+
+### Step 1: Understand how .yellow[color*] functions work
+
+1. Call .yellow[color*] function with arguments:
+  - .yellow[palette]: colors we want to use
+  - .yellow[domain]: range of expected inputs (optional, but use it for consistent scaling between data and colors)
+  - [returns] .yellow[palette] function
+  
+2. Call .yellow[palette] function with argument:
+  - .yellow[value]: vector of input values
+  - [returns] vector of colors (.yellow["#RRGGBB(AA)"] format)
+
+### Step 2: Pick appropriate .yellow[color*] function
+
+- Continuous input: .yellow[colorNumeric], .yellow[colorBin], and .yellow[colorQuantile]
+- Categorical input: .yellow[colorFactor]
+
+]]
+
+.column.bg-black[.content.vmiddle[
+
+```{r pal-demo}
+pal_demo <- colorNumeric(
+  c("red", "green", "blue"), 1:4
+)
+pal_demo(1:4)
+
+previewColors(pal = pal_demo, values = 1:4)
+```
+
+]]
+
+---
+
+class: split-two white
+
+.column.bg-main1[.content[
+
+# Continuous input, continuous colors (.yellow[colorNumeric])
+
+```{r color-numeric, eval = FALSE}
+num_pal <- colorNumeric(
+  palette = "Blues",
+  domain = asian_countries$gdp_md_est
+)
+
+leaflet(asian_countries) %>%
+  addPolygons(
+    stroke = FALSE,
+    color = ~num_pal(gdp_md_est),
+    fillOpacity = 1,
+    smoothFactor = 0.2
+  )
+```
+
+]]
+
+.column.bg-main3[.content.vmiddle[
+
+```{r color-numeric-out, ref.label = "color-numeric", echo = FALSE, warning = FALSE, out.width = "100%"}
+
+```
+
+]]
+
+---
+
+class: split-two white
+
+.column.bg-main1[.content[
+
+# Continuous input, discrete colors (.yellow[colorBin])
+
+```{r color-bin, eval = FALSE}
+bin_pal <- colorBin(
+  palette = "Blues",
+  domain = asian_countries$gdp_md_est,
+  bins = 6, 
+  pretty = FALSE
+)
+
+leaflet(asian_countries) %>%
+  addPolygons(
+    stroke = FALSE,
+    color = ~bin_pal(gdp_md_est),
+    fillOpacity = 1, 
+    smoothFactor = 0.2
+  )
+```
+
+]]
+
+.column.bg-main3[.content.vmiddle[
+
+```{r color-bin-out, ref.label = "color-bin", echo = FALSE, warning = FALSE, out.width = "100%"}
+
+```
+
+]]
+
+---
+
+class: split-two white
+
+.column.bg-main1[.content[
+
+# Continuous input, discrete colors (.yellow[colorQuantile])
+
+```{r color-quantile, eval = FALSE}
+q_pal <- colorQuantile(
+  palette = "Blues",
+  domain = asian_countries$gdp_md_est, 
+  n = 7
+)
+
+leaflet(asian_countries) %>%
+  addPolygons(
+    stroke = FALSE,
+    color = ~q_pal(gdp_md_est),
+    fillOpacity = 1,
+    smoothFactor = 0.2
+  )
+```
+
+]]
+
+.column.bg-main3[.content.vmiddle[
+
+```{r color-quantile-out, ref.label = "color-quantile", echo = FALSE, warning = FALSE, out.width = "100%"}
+
+```
+
+]]
+
+---
+
+class: split-two white
+
+.column.bg-main1[.content[
+
+# Coloring categorical data
+
+```{r color-factor, eval = FALSE}
+fact_pal <- colorFactor(
+  palette = "viridis",
+  domain = asian_countries$income_grp
+)
+
+leaflet(asian_countries) %>%
+  addPolygons(
+    stroke = FALSE,
+    color = ~fact_pal(income_grp),
+    fillOpacity = 1,
+    smoothFactor = 0.2
+  )
+```
+
+]]
+
+.column.bg-main3[.content.vmiddle[
+
+```{r color-factor-out, ref.label = "color-factor", echo = FALSE, warning = FALSE, out.width = "100%"}
+
+```
+
+]]
+
+---
+
+class: split-40 white
+
+.column.bg-main1[.content.vmiddle.center[
+
+## Want to learn more about the .yellow[color*] function?  
+
+## Check `r ji("point_right")`
+
+]]
+
+.column[.content.vmiddle[
+
+```{r colors-doc, echo = FALSE}
+include_url(
+  "https://www.rdocumentation.org/packages/leaflet/versions/2.0.3/topics/colorNumeric",
+  height = "600px"
+)
+```
+
+]]
+
+---
+
+layout: false
+class: bg-main3 split-30
+
+.column[
+
+]
+
+.column.slide-in-right[.content.vmiddle[
+
+.sliderbox.shade_main.pad1[
 .font5[Legends]
 ]
 
