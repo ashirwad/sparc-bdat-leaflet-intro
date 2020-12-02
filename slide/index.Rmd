@@ -11,6 +11,8 @@ output:
       highlightStyle: github
       highlightLines: true
       countIncrementalSlides: false
+    includes:
+      after_body: "assets/collapse-output.html"
 ---
 
 ```{r setup, include = FALSE}
@@ -18,12 +20,207 @@ library(leaflet)
 library(rnaturalearth)
 library(knitr)
 library(emo)
+library(tidyverse)
+library(USAboundaries)
+library(USAboundariesData)
+library(countdown)
+
+usa <- us_states() %>%
+  filter(
+    !name %in% c(
+      "Alaska", "Commonwealth of the Northern Mariana Islands", "Guam", 
+       "Hawaii", "Puerto Rico", "United States Virgin Islands"
+    )
+  )
 
 asian_countries <- ne_countries(
   continent = "asia", 
   returnclass = "sf"
 )
 ```
+
+---
+
+layout: false
+class: bg-main3 split-30
+
+.column[
+
+]
+
+.column.slide-in-right[.content.vmiddle[
+
+.sliderbox.shade_main.pad1[
+.font5[Basemaps]
+]
+
+]]
+
+---
+
+class: split-two white
+
+.column.bg-main1[.content[
+
+# Default (OpenStreetMap) Tiles
+
+```{r osm-tiles, eval = FALSE}
+leaflet(asian_countries) %>%
+  addTiles() %>%
+  addPolygons()
+```
+
+]]
+
+.column.bg-main3[.content.vmiddle[
+
+```{r osm-tiles-out, ref.label = "osm-tiles", echo = FALSE, warning = FALSE, out.width = "100%"}
+
+```
+
+]]
+
+---
+
+class: split-40 white
+
+.column.bg-main1[.content[
+
+# Third-Party Tiles
+
+```{r provider-tiles-smry, collapse = TRUE}
+# Total third-party tile layers
+length(providers)
+
+# Take a look at the first 5 tile layers
+head(providers, 5)
+```
+
+]]
+
+.column.bg-main3[.content.vmiddle[
+
+```{r provider-tiles-preview, echo = FALSE}
+include_url(
+  "http://leaflet-extras.github.io/leaflet-providers/preview/index.html",
+  height = "600px"
+)
+```
+
+]]
+
+---
+
+class: split-two class
+
+.column.bg-main1[.content[
+
+# Stamen Toner Tiles
+
+```{r stamen-toner-tiles, eval = FALSE}
+leaflet(asian_countries) %>%
+  addProviderTiles(
+    provider = providers$Stamen.Toner
+  ) %>%
+  addPolygons()
+```
+
+]]
+
+.column.bg-main3[.content.vmiddle[
+
+```{r stamen-toner-tiles-out, ref.label = "stamen-toner-tiles", echo = FALSE, warning = FALSE, out.width = "100%"}
+
+```
+
+]]
+
+---
+
+class: split-two white
+
+.column.bg-main1[.content[
+
+# Combining Tile Layers
+
+```{r stacked-tiles, eval = FALSE}
+leaflet(asian_countries) %>%
+  addProviderTiles(
+    provider = providers$MtbMap
+  ) %>%
+  addProviderTiles(
+    provider = providers$Stamen.TonerLines, 
+    options = providerTileOptions(
+      opacity = 0.35
+    )
+  ) %>%
+  addProviderTiles(
+    provider = providers$Stamen.TonerLabels
+  ) %>%
+  addPolygons()
+```
+
+]]
+
+.column.bg-main3[.content.vmiddle[
+
+```{r stacked-tiles-out, ref.label = "stacked-tiles", echo = FALSE, warning = FALSE, out.width = "100%"}
+
+```
+
+]]
+
+---
+
+class: split-two white
+
+.column.bg-main1[.content[
+
+# Your Turn
+
+```{r exercise-01, eval = FALSE}
+# Use CartoDB.Positron map tiles
+leaflet(usa) %>%
+  addProviderTiles(---) %>%
+  addPolygons()
+```
+
+`r countdown(minutes = 2, left = 0)`
+
+]]
+
+.column.bg-main3[.content.vmiddle[
+
+```{r exercise-01-key, echo = FALSE, out.width = "100%"}
+leaflet(usa) %>%
+  addProviderTiles(provider = providers$CartoDB.Positron) %>%
+  addPolygons()
+```
+
+]]
+
+---
+
+class: split-40 white
+
+.column.bg-main1[.content.vmiddle.center[
+
+## Want to learn more about the .yellow[addProviderTiles] function?  
+
+## Check `r ji("point_right")`
+
+]]
+
+.column[.content.vmiddle[
+
+```{r add-provider-tiles-doc, echo = FALSE}
+include_url(
+  "https://www.rdocumentation.org/packages/leaflet/versions/2.0.3/topics/addProviderTiles",
+  height = "600px"
+)
+```
+
+]]
 
 ---
 
