@@ -1,19 +1,21 @@
 ---
-title: "Intro to Geospatial Visualization with leaflet in R"
-author: "Ashirwad Barnwal"
-date: "11/26/2020"
-output: 
+title: "SPARC Big Data Workshop"
+subtitle: "Spatial Visualization with Leaflet in R"
+author: "<br><br>Ashirwad Barnwal"
+date: "<br>6-Dec-2020<br><br>"
+output:
   xaringan::moon_reader:
     lib_dir: libs
-    css: ["kunoichi", "ninjutsu"]
+    css: ["kunoichi", "ninjutsu", "assets/custom.css"]
+    seal: true
+    self_contained: false
     nature:
-      ratio: '16:9'
+      ratio: "16:9"
       highlightStyle: github
       highlightLines: true
       countIncrementalSlides: false
-    includes:
-      after_body: "assets/collapse-output.html"
 ---
+
 
 ```{r setup, include = FALSE}
 library(leaflet)
@@ -24,6 +26,23 @@ library(tidyverse)
 library(USAboundaries)
 library(USAboundariesData)
 library(countdown)
+library(widgetframe)
+library(here)
+
+livedemosign <- function(top, left, deg) {
+  htmltools::div(
+    "Live Demo!",
+    class = "faa-flash animated",
+    style = glue::glue(
+      "border:solid; border-color:black; position:absolute; top:{top}%; left:{left}%; font-size:36px; padding:4px; background-color:white; color:black;transform:rotate({deg}deg);"
+    )
+  )
+}
+
+asian_countries <- ne_countries(
+  continent = "asia", 
+  returnclass = "sf"
+)
 
 usa <- us_states() %>%
   filter(
@@ -32,12 +51,199 @@ usa <- us_states() %>%
        "Hawaii", "Puerto Rico", "United States Virgin Islands"
     )
   )
+fatal_totals <- read_csv(here("data", "usa-fatal-crash-totals-2018.csv"))
 
-asian_countries <- ne_countries(
-  continent = "asia", 
-  returnclass = "sf"
-)
+usa_fatals <- usa %>% left_join(fatal_totals, by = c("name" = "state")) %>%
+  select(name, population:geometry)
 ```
+
+class: split-two white
+
+.column.bg-main1[.content.vmiddle.center[
+
+# What's the goal?
+
+<br>
+
+## To make you all think like a ~~bike~~ .yellow[map builder] and help create `r ji("point_right")`
+
+![loop+bike](https://media1.giphy.com/media/TlK63EPYTCOMhJal7u8/giphy.gif)  
+<div style='font-size:50%'>(Available at [http://gph.is/1vKA5cc](http://gph.is/1vKA5cc), Dec 05, 2020)</div>  
+
+]]
+
+.column.bg-main3[.content.vmiddle[
+
+```{r final-map-goal, echo = FALSE}
+fatal_q_pal <- colorQuantile("viridis", usa_fatals$fatal_crashes, n = 5)
+leaflet(usa_fatals) %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addPolygons(
+    label = ~name,
+    popup = ~paste("<b> State: </b>", name, "<br>", fatal_crashes),
+    color = ~fatal_q_pal(fatal_crashes),
+    fillOpacity = 1
+  ) %>%
+  addLegend(pal = fatal_q_pal, values = ~fatal_crashes) %>%
+  frameWidget(height = 500)
+```
+
+]]
+
+---
+
+class: split-two white
+
+.column.bg-main1[.content.vmiddle.center[
+
+# What is Leaflet?
+
+<br>
+
+## An open-source .yellow[JavaScript library] for mobile-friendly .yellow[interactive maps]
+
+<br>
+
+## Check url to learn more `r ji("point_right")`
+
+]]
+
+.column.bg-main3[.content.vmiddle[
+
+```{r leaflet-url, echo = FALSE}
+include_url("https://leafletjs.com/", height = "600px")
+```
+
+]]
+
+---
+
+class: split-two white
+
+.column.bg-main1[.content.vmiddle.center[
+
+# What is R?
+
+<br>
+
+## R is a free software environment for .yellow[statistical computing] and .yellow[graphics]
+
+<br>
+
+## A good place to start learning .yellow[modern R] is `r ji("point_right")`
+
+]]
+
+.column.bg-main3[.content.vmiddle[
+
+```{r r4ds-url, echo = FALSE}
+include_url("https://r4ds.had.co.nz/", height = "600px")
+```
+
+]]
+
+---
+
+class: split-two white
+
+.column.bg-main1[.content.vmiddle.center[
+
+# R `r ji("heart")` Leaflet
+
+<br>
+
+## Leaflet functions are available in R through leaflet package
+
+<br> 
+
+## Credit: Examples in this talk are heavily based on `r ji("point_right")` tutorial
+
+]]
+
+.column.bg-main3[.content.vmiddle[
+
+```{r leaflet4r-url, echo = FALSE}
+include_url("https://rstudio.github.io/leaflet/", height = "600px")
+```
+
+]]
+
+---
+
+class: split-two white
+
+.column.bg-main1[.content[
+
+# Basics of R
+
+### - Functional programming language
+
+```{r log-fun, collapse = TRUE}
+log(100)
+```
+
+### - Each function has two types of arguments: .yellow[mandatory] & .yellow[optional]
+
+```{r check-args, collapse = TRUE}
+args(log)
+```
+
+### - To perform advanced analyses, use a package
+
+```{r pkg-loading, eval = FALSE, collapse = TRUE}
+install.packages("dplyr")
+library("dplyr") # or library(dplyr)
+```
+
+### - To explore a package, check its doc (e.g., `r ji("point_right")`)
+
+]]
+
+.column.bg-main3[.content.vmiddle[
+
+```{r dplyr-url, echo = FALSE}
+include_url("https://dplyr.tidyverse.org/index.html", height = "600px")
+```
+
+]]
+
+---
+
+class: split-two white
+
+.column.bg-main1[.content.vmiddle.center[
+
+# Valuable tip:
+
+<br>
+
+## If you .yellow[start feeling tired] since it's late at night in India, try `r ji("point_right")`
+
+]]
+
+.column.bg-main3[.content.vmiddle.center[
+
+![morning+reaction](https://media4.giphy.com/media/dYQj1vh5n7nqygIU2f/giphy.gif)  
+<div style='font-size:50%'>(Available at [http://gph.is/2EBOCYv](http://gph.is/2EBOCYv), Dec 05, 2020)</div> 
+
+]]
+
+---
+
+class: split-two white
+
+.column.bg-main1[.content.vmiddle.center[
+
+# Let's get started and build some maps... 
+
+]]
+
+.column.bg-main3[.content.vmiddle.center[
+
+![Cities+Roads+GIF+By+Flightnook](https://media4.giphy.com/media/eNShjuzLis1t8aWYoi/giphy.gif)  
+<div style='font-size:50%'>(Available at [https://gph.is/g/ZdxLgk8](https://gph.is/g/ZdxLgk8), Dec 05, 2020)</div>
+
+]]
 
 ---
 
@@ -216,6 +422,160 @@ class: split-40 white
 ```{r add-provider-tiles-doc, echo = FALSE}
 include_url(
   "https://www.rdocumentation.org/packages/leaflet/versions/2.0.3/topics/addProviderTiles",
+  height = "600px"
+)
+```
+
+]]
+
+---
+
+layout: false
+class: bg-main3 split-30
+
+.column[
+
+]
+
+.column.slide-in-right[.content.vmiddle[
+
+.sliderbox.shade_main.pad1[
+.font5[Popups and Labels]
+]
+
+]]
+
+---
+
+class: split-two white
+
+.column.bg-main1[.content[
+
+# Popups
+
+```{r popups, eval = FALSE}
+leaflet(asian_countries) %>%
+  addPolygons(popup = ~name) %>%
+  frameWidget(height = 500)
+```
+
+]]
+
+.column.bg-main3[.content.vmiddle[
+
+```{r popups-out, ref.label = "popups", echo = FALSE, warning = FALSE, out.width = "100%"}
+
+```
+
+]]
+
+---
+
+class: split-two white
+
+.column.bg-main1[.content[
+
+# Labels
+
+```{r labels, eval = FALSE}
+leaflet(asian_countries) %>%
+  addPolygons(label = ~name) %>%
+  frameWidget(height = 500)
+```
+
+]]
+
+.column.bg-main3[.content.vmiddle[
+
+```{r labels-out, ref.label = "labels", echo = FALSE, warning = FALSE, out.width = "100%"}
+
+```
+
+]]
+
+---
+
+class: split-two white
+
+.column.bg-main1[.content[
+
+# Both Popups and Labels
+
+```{r popups-labels, eval = FALSE}
+leaflet(asian_countries) %>%
+  addPolygons(
+    label = ~name,
+    popup = ~paste(
+      "<b>Country:</b>", name, "<br/>", 
+      prettyNum(pop_est, big.mark = ",")
+    )
+  ) %>%
+  frameWidget(height = 500)
+```
+
+]]
+
+.column.bg-main3[.content.vmiddle[
+
+```{r popups-labels-out, ref.label = "popups-labels", echo = FALSE, warning = FALSE}
+
+```
+
+]]
+
+---
+
+class: split-two white
+
+.column.bg-main1[.content[
+
+# Your Turn
+
+```{r exercise-02, eval = FALSE}
+leaflet(usa_fatals) %>%
+  addPolygons(
+    label = ---,
+    popup = ---
+  )
+```
+
+`r countdown(minutes = 2, left = 0)`
+
+]]
+
+.column.bg-main3[.content.vmiddle[
+
+```{r exercise-02-key, echo = FALSE}
+leaflet(usa_fatals) %>%
+  addPolygons(
+    label = ~name,
+    popup = ~paste(
+      "<b>State:</b>", name, "<br/>", 
+      prettyNum(fatal_crashes, big.mark = ",")
+    )
+  ) %>%
+  frameWidget(height = 500)
+```
+
+]]
+
+---
+
+class: split-two white
+
+.column.bg-main1[.content.vmiddle.center[
+
+## Want to create .yellow[fancy popups]?
+
+## Check `r ji("point_right")`
+
+]]
+
+.column[.content.vmiddle[
+
+```{r echo = FALSE}
+include_url(
+  "https://r-spatial.github.io/mapview/articles/articles/mapview_04-popups.html",
   height = "600px"
 )
 ```
