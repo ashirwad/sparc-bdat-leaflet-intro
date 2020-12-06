@@ -3,5 +3,3 @@
 .RData
 .Ruserdata
 testing-ideas/
-slide/*
-!slide/index.Rmd
