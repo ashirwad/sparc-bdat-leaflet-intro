@@ -13,6 +13,7 @@ library(tidyverse)
 library(USAboundaries)
 library(USAboundariesData)
 library(here)
+library(sf)
 
 usa <- us_states() %>%
   filter(
