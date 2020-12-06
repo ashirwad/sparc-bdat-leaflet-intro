@@ -1,0 +1,106 @@
+---
+title: "In-class exercises"
+author: "Ashirwad Barnwal"
+date: "12/6/2020"
+output: html_document
+---
+
+# Setup
+
+```{r setup, include = FALSE}
+library(leaflet)
+library(tidyverse)
+library(USAboundaries)
+library(USAboundariesData)
+library(here)
+
+usa <- us_states() %>%
+  filter(
+    !name %in% c(
+      "Alaska", "Commonwealth of the Northern Mariana Islands", "Guam", 
+       "Hawaii", "Puerto Rico", "United States Virgin Islands"
+    )
+  )
+fatal_totals <- read_csv(here("data", "usa-fatal-crash-totals-2018.csv"))
+
+usa_fatals <- usa %>% left_join(fatal_totals, by = c("name" = "state")) %>%
+  select(name, population:geometry)
+```
+
+# Familiarize with data
+
+```{r}
+glimpse(usa_fatals)
+```
+
+# Exercise 01
+
+```{r exercise-01, eval = FALSE}
+# Use CartoDB.Positron map tiles
+leaflet(usa) %>%
+  addProviderTiles(---) %>%
+  addPolygons()
+```
+
+# Exercise 02
+
+```{r exercise-02, eval = FALSE}
+leaflet(usa_fatals) %>%
+  addPolygons(
+    label = ---,
+    popup = ---
+  )
+```
+
+# Exercise 03
+
+```{r exercise-03, eval = FALSE}
+# Create a quantile palette for fatal crashes
+# Use "viridis" palette and 5 equal-size quantiles
+fatal_q_pal <- 
+
+# Create map where each state is colored based on fatal crash frequency
+leaflet(usa_fatals) %>%
+  addPolygons(
+    stroke = FALSE,
+    color = ---,
+    fillOpacity = 1,
+    smoothFactor = 0.2
+  )
+```
+
+# Exercise 04
+
+```{r exercise-04, eval = FALSE}
+# Add a legend to the map
+leaflet(usa_fatals) %>%
+  addPolygons(
+    stroke = FALSE,
+    color = ~fatal_q_pal(fatal_crashes),
+    fillOpacity = 1,
+    smoothFactor = 0.2
+  ) %>%
+  addLegend()
+```
+
+# Exercise 05
+
+```{r exercise-05, eval = FALSE}
+# Create a quantile palette for fatal crashes
+# Use "viridis" palette and 5 equal-size quantiles
+fatal_q_pal <- 
+
+leaflet(usa_fatals) %>%
+  # Use CartoDB.Positron map tiles
+  addProviderTiles(---) %>%
+  # Add state name as label, name & fatal crash frequency as popup, and
+  # map fatal crash frequency to color
+  addPolygons(
+    label = ---,
+    popup = ---,
+    color = ---,
+    fillOpacity = 1
+  ) %>%
+  # Add legend
+  addLegend()
+```
