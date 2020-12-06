@@ -16,7 +16,6 @@ output:
       countIncrementalSlides: false
 ---
 
-
 ```{r setup, include = FALSE}
 library(leaflet)
 library(rnaturalearth)
@@ -777,6 +776,56 @@ leaflet(asian_countries) %>%
 
 ---
 
+class: split-two white
+
+.column.bg-main1[.content[
+
+# Your Turn
+
+```{r exercise-03, eval = FALSE}
+# Create a quantile palette for fatal crashes
+# Use "viridis" palette and 5 equal-size quantiles
+fatal_q_pal <- 
+
+# Create map where each state is colored based on fatal crash frequency
+leaflet(usa_fatals) %>%
+  addPolygons(
+    stroke = FALSE,
+    color = ---,
+    fillOpacity = 1,
+    smoothFactor = 0.2
+  )
+```
+
+`r countdown(minutes = 2, left = 0)`
+
+]]
+
+.column.bg-main3[.content.vmiddle[
+
+```{r exercise-03-key, echo = FALSE}
+# Create a quantile palette for fatal crashes
+# Use "viridis" palette and 5 equal-size quantiles
+fatal_q_pal <- colorQuantile(
+  palette = "viridis",
+  domain = usa_fatals$fatal_crashes,
+  n = 5
+)
+
+# Create map where each state is colored based on fatal crash frequency
+leaflet(usa_fatals) %>%
+  addPolygons(
+    stroke = FALSE,
+    color = ~fatal_q_pal(fatal_crashes),
+    fillOpacity = 1,
+    smoothFactor = 0.2
+  )
+```
+
+]]
+
+---
+
 class: split-40 white
 
 .column.bg-main1[.content.vmiddle.center[
@@ -886,6 +935,50 @@ leaflet(asian_countries) %>%
 
 ---
 
+class: split-two white
+
+.column.bg-main1[.content[
+
+# Your Turn
+
+```{r exercise-04, eval = FALSE}
+# Add a legend to the map
+leaflet(usa_fatals) %>%
+  addPolygons(
+    stroke = FALSE,
+    color = ~fatal_q_pal(fatal_crashes),
+    fillOpacity = 1,
+    smoothFactor = 0.2
+  ) %>%
+  addLegend()
+```
+
+`r countdown(minutes = 2, left = 0)`
+
+]]
+
+.column.bg-main3[.content.vmiddle[
+
+```{r exercise-04-key, echo = FALSE}
+leaflet(usa_fatals) %>%
+  addPolygons(
+    stroke = FALSE,
+    color = ~fatal_q_pal(fatal_crashes),
+    fillOpacity = 1,
+    smoothFactor = 0.2
+  ) %>%
+  addLegend(
+    pal = fatal_q_pal,
+    values = ~fatal_crashes,
+    opacity = 1
+  ) %>%
+  frameWidget()
+```
+
+]]
+
+---
+
 class: split-40 white
 
 .column.bg-main1[.content.vmiddle.center[
@@ -907,8 +1000,80 @@ include_url(
 
 ]]
 
+---
 
+class: split-two white
 
+.column.bg-main1[.content[
+
+# Consolidate your learning
+
+```{r exercise-05, eval = FALSE}
+# Create a quantile palette for fatal crashes
+# Use "viridis" palette and 5 equal-size quantiles
+fatal_q_pal <- 
+
+leaflet(usa_fatals) %>%
+  # Use CartoDB.Positron map tiles
+  addProviderTiles(---) %>%
+  # Add state name as label, name & fatal crash frequency as popup, and
+  # map fatal crash frequency to color
+  addPolygons(
+    label = ---,
+    popup = ---,
+    color = ---,
+    fillOpacity = 1
+  ) %>%
+  # Add legend
+  addLegend()
+```
+
+]]
+
+.column.bg-main3[.content.vmiddle[
+
+```{r exercise-05-key, echo = FALSE}
+fatal_q_pal <- colorQuantile(
+  palette = "viridis", 
+  domain = usa_fatals$fatal_crashes, 
+  n = 5
+)
+
+leaflet(usa_fatals) %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addPolygons(
+    label = ~name,
+    popup = ~paste("<b> State: </b>", name, "<br>", fatal_crashes),
+    color = ~fatal_q_pal(fatal_crashes),
+    fillOpacity = 1
+  ) %>%
+  addLegend(
+    pal = fatal_q_pal, 
+    values = ~fatal_crashes,
+    opacity = 1
+  ) %>%
+  frameWidget(height = 500)
+```
+
+]]
+
+---
+
+class: split-30 white
+
+.column.bg-main1[.content.vmiddle.center[
+
+# Next steps...
+
+]]
+
+.column.bg-main3[.content.vmiddle[
+
+```{r isugg20-url, echo = FALSE}
+include_url("https://isugg20-crash-viz.netlify.app/#1", height = 600)
+```
+
+]]
 
 
 
